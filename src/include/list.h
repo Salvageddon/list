@@ -21,11 +21,13 @@ typedef struct LST_LIST{
 
     /*
         Add an element at the end of the list.
+        All elements must be freed using either clear() or remove().
 
         \param list list to have element added.
         \param newElement value of the new element. Must be allocated dynamically.
+        \param destructor destructor of the value. Used for safely freeing value when removing element.
     */
-    void (*add)(struct LST_LIST * list, void * newElement);
+    void (*add)(struct LST_LIST * list, void * newElement, void (*destructor)(void * val));
 
     /*
         Remove an element at specified index of the list.
@@ -60,8 +62,9 @@ typedef struct LST_LIST{
         \param list list to have value changed.
         \param index on the list that will have value changed.
         \param newVal new value. Must be allocated dynamically.
+        \param newDestructor destructor of new value. Used for safely freeing value when removing element.
     */
-    void (*setVal)(struct LST_LIST list, int index, void * newVal);
+    void (*setVal)(struct LST_LIST list, int index, void * newVal, void (*newDestructor)(void * val));
 } List;
 
 /*

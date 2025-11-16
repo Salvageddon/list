@@ -6,6 +6,7 @@
 struct LST_ELEMENT{
     struct LST_ELEMENT * next;
     void * val;
+    void (*valDestructor)(void * val);
 };
 
 typedef struct LST_ELEMENT Element;
@@ -22,15 +23,21 @@ Element * gotoIndex(List list, int index){
     return element;
 }
 
-void add(List * list, void * newElement){
+void add(List * list, void * newElement, void (*destructor)(void * val)){
     if(!newElement){
         printf("List.add(): Cannot add NULL element.\n");
+        return;
+    }
+
+    if(!destructor){
+        printf("List.add(): Cannot attach NULL destructor.\n");
         return;
     }
 
     Element * new = malloc(sizeof(Element));
     new->val = newElement;
     new->next = NULL;
+    new->valDestructor = destructor;
 
     Element * last = gotoIndex(*list, list->length - 1);
 
@@ -53,7 +60,7 @@ void removeElement(List * list, int index, int freeVal){
     if(!previous) list->origin = next;
     else previous->next = next;
 
-    if(freeVal) free(removeMe->val);
+    if(freeVal) removeMe->valDestructor(removeMe->val);
     free(removeMe);
 
     list->length--;
@@ -76,13 +83,20 @@ void * getVal(List list, int index){
     return gotoIndex(list, index)->val;
 }
 
-void setVal(List list, int index, void * newVal){
+void setVal(List list, int index, void * newVal, void (*destructor)(void * val)){
     if(index < 0 || index >= list.length){
         printf("List.setVal(): Index is out of bounds\n");
         return;
     }
 
-    gotoIndex(list, index)->val = newVal;
+    if(!destructor){
+        printf("List.setVal(): Cannot attach NULL destructor.\n");
+        return;
+    }
+    
+    Element * el = gotoIndex(list, index);
+    el->val = newVal;
+    el->valDestructor = destructor;
 }
 
 List createList(void){
