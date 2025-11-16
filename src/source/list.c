@@ -25,6 +25,7 @@ Element * gotoIndex(List list, int index){
 void add(List * list, void * newElement){
     if(!newElement){
         printf("List.add(): Cannot add NULL element.\n");
+        return;
     }
 
     Element * new = malloc(sizeof(Element));
@@ -42,6 +43,7 @@ void add(List * list, void * newElement){
 void removeElement(List * list, int index, int freeVal){
     if(index < 0 || index >= list->length){
         printf("List.remove(): Index is out of bounds\n");
+        return;
     } 
 
     Element * removeMe = gotoIndex(*list, index);
@@ -61,6 +63,26 @@ void clear(List * list, int freeVal){
     while(0 < list->length){
         removeElement(list, 0, freeVal);
     }
+
+    list->origin = NULL;
+}
+
+void * getVal(List list, int index){
+    if(index < 0 || index >= list.length){
+        printf("List.getVal(): Index is out of bounds\n");
+        return NULL;
+    }
+
+    return gotoIndex(list, index)->val;
+}
+
+void setVal(List list, int index, void * newVal){
+    if(index < 0 || index >= list.length){
+        printf("List.setVal(): Index is out of bounds\n");
+        return;
+    }
+
+    gotoIndex(list, index)->val = newVal;
 }
 
 List createList(void){
@@ -69,6 +91,8 @@ List createList(void){
         0,
         &add,
         &removeElement,
-        &clear
+        &clear,
+        &getVal,
+        &setVal
     };
 }
