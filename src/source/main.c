@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/list.h"
-#include <salvagames/list.h>
 
 typedef struct{
     int a;
