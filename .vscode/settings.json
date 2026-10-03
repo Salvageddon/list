@@ -1,0 +1,6 @@
+{
+    "C_Cpp.default.systemIncludePath": [
+        "C:\\msys64\\mingw64\\include",
+        "./"
+    ]
+}
